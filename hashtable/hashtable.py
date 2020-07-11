@@ -20,9 +20,10 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=8):
         # Your code here
-
+        self.data = [0] * capacity
+        self.capacity = capacity
 
     def get_num_slots(self):
         """
@@ -35,7 +36,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return len(self.data)
 
     def get_load_factor(self):
         """
@@ -63,7 +64,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
-
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + hash) + x.encode()
+        return hash
 
     def hash_index(self, key):
         """

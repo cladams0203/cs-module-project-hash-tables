@@ -20,7 +20,7 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity=8):
+    def __init__(self, capacity):
         # Your code here
         self.data = [0] * capacity
         self.capacity = capacity
@@ -66,7 +66,7 @@ class HashTable:
         # Your code here
         hash = 5381
         for x in key:
-            hash = ((hash << 5) + hash) + x.encode()
+            hash = ((hash << 5) + hash) + ord(x)
         return hash
 
     def hash_index(self, key):
@@ -86,6 +86,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        slot = self.hash_index(key)
+        self.data[slot] = value
 
 
     def delete(self, key):
@@ -97,6 +99,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.put(key, None)
 
 
     def get(self, key):
@@ -108,6 +111,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        slot = self.hash_index(key)
+        return self.data[slot]
 
 
     def resize(self, new_capacity):

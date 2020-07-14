@@ -1,3 +1,4 @@
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -7,6 +8,42 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def add_entry(self, key, value):
+        new_entry = HashTableEntry(key, value)
+        if self.head == None:
+            self.head = new_entry
+        else:
+            new_entry.next = self.head
+            self.head = new_entry
+
+    def remove_entry(self, key):
+        cur = self.head
+        cur_next = self.head.next
+        if self.head.key == key:
+            self.head = self.head.next
+            cur.next = None
+            return cur
+        while cur.next is not None:
+            if cur_next.key == key:
+                cur.next = cur_next.next
+                cur_next = None
+                return cur.next
+            else:
+                cur = cur.next
+                cur_next = cur_next.next
+
+    def find(self, key):
+        cur = self.head
+        while cur.next == None:
+            if cur.key == key:
+                return cur.value
+            else:
+                cur = cur.next
+        return None
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -87,7 +124,12 @@ class HashTable:
         """
         # Your code here
         slot = self.hash_index(key)
-        self.data[slot] = value
+        if self.data[slot] == 0:
+            new_list = LinkedList()
+            new_list.add_entry(key, value)
+            self.data[slot] = new_list
+        else:
+            self.data[slot].add_entry(key, value)
 
 
     def delete(self, key):
@@ -99,7 +141,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.put(key, None)
+        slot = self.hash_index(key)
+        self.data[slot].remove_entry(key)
 
 
     def get(self, key):
@@ -112,7 +155,10 @@ class HashTable:
         """
         # Your code here
         slot = self.hash_index(key)
-        return self.data[slot]
+        # if self.data[slot] == 0:
+        #     return None
+        # else:
+        return self.data[slot].find(key)
 
 
     def resize(self, new_capacity):

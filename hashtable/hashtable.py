@@ -25,6 +25,11 @@ class LinkedList:
                 while cur_prev.next is not None:
                     if cur.key == key:
                         cur.value = value
+                        cur_prev = cur
+                        cur = cur.next
+                    else:
+                        cur_prev = cur
+                        cur = cur.next
                 new_entry.next = self.head
                 self.head = new_entry
 
@@ -51,7 +56,7 @@ class LinkedList:
         if self.head == None:
             return None
         cur = self.head
-        while cur.next == None:
+        while cur is not None:
             if cur.key == key:
                 return cur.value
             else:
@@ -96,7 +101,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        factor = (self.capacity - self.entries) /2
+        factor = self.entries  / self.capacity
         return factor
 
     def fnv1(self, key):
@@ -138,16 +143,30 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # if self.get_load_factor() > .7:
+        #     self.resize(self.capacity * 2)
         slot = self.hash_index(key)
         if self.data[slot] == 0:
             self.entries += 1
             new_list = LinkedList()
             new_list.add_entry(key, value)
             self.data[slot] = new_list
+            # self.data[slot].add_entry(key, value)
 
         else:
             self.entries += 1
             self.data[slot].add_entry(key, value)
+        # else:
+        #     slot = self.hash_index(key)
+        #     if self.data[slot] == 0:
+        #         self.entries += 1
+        #         new_list = LinkedList()
+        #         new_list.add_entry(key, value)
+        #         self.data[slot] = new_list
+        #
+        #     else:
+        #         self.entries += 1
+        #         self.data[slot].add_entry(key, value)
 
 
 
@@ -193,6 +212,8 @@ class HashTable:
         self.capacity = new_capacity
         self.data = [0] * new_capacity
         for list in old_arr:
+            if list == 0:
+                return
             cur = list.head
             if cur.next == None:
                 self.put(cur.key, cur.value)
@@ -215,15 +236,15 @@ if __name__ == "__main__":
     ht.put("line_6", "The jaws that bite, the claws that catch!")
     ht.put("line_7", "Beware the Jubjub bird, and shun")
     ht.put("line_8", 'The frumious Bandersnatch!"')
-    # ht.put("line_9", "He took his vorpal sword in hand;")
-    # ht.put("line_10", "Long time the manxome foe he sought--")
-    # ht.put("line_11", "So rested he by the Tumtum tree")
-    # ht.put("line_12", "And stood awhile in thought.")
+    ht.put("line_9", "He took his vorpal sword in hand;")
+    ht.put("line_10", "Long time the manxome foe he sought--")
+    ht.put("line_11", "So rested he by the Tumtum tree")
+    ht.put("line_12", "And stood awhile in thought.")
 
     print("")
 
     # Test storing beyond capacity
-    for i in range(1, 9):
+    for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
     # Test resizing
@@ -233,8 +254,10 @@ if __name__ == "__main__":
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
+
+
     # Test if data intact after resizing
-    for i in range(1, 9):
+    for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
     print("")
